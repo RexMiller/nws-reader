@@ -40,8 +40,8 @@ defmodule NwsReader.ClientTests do
     <dewpoint_c>0.6</dewpoint_c>
     """
     xml
-    |> xml_to_map()
-    |> IO.inspect()
+    |> NwsReader.XmlParser.scan()
+    |> IO.inspect(label: "\nResult")
   end
 
   def xml_to_map(xml) do
@@ -54,6 +54,26 @@ defmodule NwsReader.ClientTests do
         do: {hd, xml_to_map(leaf)},
         else: {hd, leaf}
     end)   
+  end
+end
+
+defmodule NwsReader.XmlParser do
+  
+  @regex ~r{<([A-Z][A-Z0-9_]*)\b[^>]*>(.*?)</\1>}i
+
+  def scan(xml) do
+    @regex
+    |> Regex.scan(xml, capture: :all_but_first)
+    |> IO.inspect(label: "\nscanned")
+    |> Enum.map(fn(tag) -> 
+      process_scanned(tag) 
+
+    end)
+  end
+
+  defp process_scanned([node|contents]) do 
+    [leaf | _] = contents
+    {node, leaf}
   end
 
 end
