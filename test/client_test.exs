@@ -27,53 +27,45 @@ defmodule NwsReader.ClientTests do
 
   test "some stuff" do
     xml = """
-    <temperature_string>88.0 F (31.1 C)</temperature_string>
-    <temp_f>88.0</temp_f>
-    <temp_c>31.1</temp_c>
-    <parent><child>child content</child></parent>
-    <relative_humidity>14</relative_humidity>
-    <pressure_string>1013.2 mb</pressure_string>
-    <pressure_mb>1013.2</pressure_mb>
-    <pressure_in>29.97</pressure_in>
-    <dewpoint_string>33.1 F (0.6 C)</dewpoint_string>
-    <dewpoint_f>33.1</dewpoint_f>
-    <dewpoint_c>0.6</dewpoint_c>
+	<credit>NOAA's National Weather Service</credit>
+	<image>
+		<url>http://weather.gov/images/xml_logo.gif</url>
+		<link>http://weather.gov</link>
+	</image>
+	<weather>Fair</weather>
+  <temp>
+    comes in two flavors
+    <temp_f>60</temp_f>
+  </temp>
     """
     xml
-    |> NwsReader.XmlParser.scan()
+    |> NwsReader.XmlParser.map_xml()
     |> IO.inspect(label: "\nResult")
   end
 
-  def xml_to_map(xml) do
-    re = ~r{<([A-Z][A-Z0-9_]*)\b[^>]*>(.*?)</\1>}i
-    re
-    |> Regex.scan(xml, capture: :all_but_first) 
-    |> Enum.map(fn([hd|tl]) ->
-      [leaf|_] = tl
-      if Regex.match?(re, leaf),
-        do: {hd, xml_to_map(leaf)},
-        else: {hd, leaf}
-    end)   
-  end
 end
 
 defmodule NwsReader.XmlParser do
   
-  @regex ~r{<([A-Z][A-Z0-9_]*)\b[^>]*>(.*?)</\1>}i
+  @tag_pattern ~r{<([A-Z][A-Z0-9_]*)\b[^>]*>(.*?)</\1>}is
 
-  def scan(xml) do
-    @regex
+  def map_xml(xml) do
+    @tag_pattern
     |> Regex.scan(xml, capture: :all_but_first)
     |> IO.inspect(label: "\nscanned")
-    |> Enum.map(fn(tag) -> 
-      process_scanned(tag) 
-
-    end)
+    |> map_scanned([])
+    |> Map.new()
   end
 
-  defp process_scanned([node|contents]) do 
-    [leaf | _] = contents
-    {node, leaf}
+  defp map_scanned([], result), do: Enum.reverse(result)
+
+  defp map_scanned([head|tail], result) do
+    [tag|contents] = head
+    [leaf|_] = contents
+
+    if Regex.match?(@tag_pattern, leaf),
+      do: map_scanned(tail, [{tag, Map.new(map_xml(leaf))} | result]),
+      else: map_scanned(tail, [{tag, leaf} | result])
   end
 
 end
