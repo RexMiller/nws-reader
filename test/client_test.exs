@@ -1,6 +1,6 @@
 defmodule NwsReader.ClientTests do
-  use ExUnit.Case
-  doctest NwsReader.Client
+  use ExUnit.Case, async: true
+  @moduletag :integration
 
   test "get_stations returns list of stations for a valid US state" do
     stations = NwsReader.Client.get_stations("AZ")
