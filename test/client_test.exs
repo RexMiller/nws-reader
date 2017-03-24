@@ -16,13 +16,15 @@ defmodule NwsReader.ClientTests do
 
   test "get_stations returns empty for an unrecognized state" do
     stations = NwsReader.Client.get_stations("zz")
-
     assert Enum.any?(stations) == false
   end
 
   test "get_observation returns xml for a given station" do
-    observation = NwsReader.Client.get_observation("kluf")
-    IO.puts observation
+    NwsReader.Client.get_observation("kluf")
+    |> String.split("\n", trim: true)
+    |> Enum.map(&String.trim/1)
+    |> Enum.any?(fn(line) -> line == "<station_id>KLUF</station_id>" end)
+    |> assert()
   end
 
 end

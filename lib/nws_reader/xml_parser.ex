@@ -5,7 +5,6 @@ defmodule NwsReader.XmlParser do
   def map_xml(xml) do
     @tag_pattern
     |> Regex.scan(xml, capture: :all_but_first)
-    |> IO.inspect(label: "\nscanned")
     |> map_scanned([])
     |> Map.new()
   end
