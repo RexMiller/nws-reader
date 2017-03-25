@@ -9,17 +9,19 @@ defmodule NwsReader.Formatter do
     ]
   end
 
-  def columns_to_rows(col_data, delimiter \\" | ") do
+  def columns_to_rows(col_data, delimiter) do
     col_data
     |> List.zip()
+    |> IO.inspect(label: "col_data zipped for delimiter(#{delimiter})")
     |> Enum.map(fn(row) -> render_row(row, delimiter) end)
   end
 
-  def render_row(row) when is_list(row) do
-    Enum.join(row, ", ")
+  def render_row(row, delimiter) when is_list(row) do
+    IO.inspect(row, label: "render_row() |> Enum.join(#{delimiter})")
+    Enum.join(row, delimiter)
   end
 
-  def render_row(row_tuple, delimiter \\" | ") do
+  def render_row(row_tuple, delimiter) do
     row_tuple
     |> Tuple.to_list()
     |> Enum.map(&render_column/1)
@@ -30,11 +32,15 @@ defmodule NwsReader.Formatter do
   defp get_column_contents(col), do: "#{col}"
 
   defp render_column(value) when is_list(value) do
+    IO.inspect(value, label: "columns_to_rows")
     value
-    |> columns_to_rows(" - ")
-    |> render_row()
+    |> columns_to_rows(": ")
+    |> render_row(", ")
   end
 
-  defp render_column(value), do: value
+  defp render_column(value, pad_char \\" ", width \\0) do
+    padding = Kernel.max(width - String.length(value), 0)
+    "#{value}#{String.duplicate(pad_char, padding)}"
+  end
 
 end
