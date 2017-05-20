@@ -4,8 +4,9 @@ defmodule NwsReader.FormatterTest do
   import NwsReader.Formatter
 
   test "print_map" do
-    result = print_map data()
-    IO.inspect result;
+    rows = print_map data()
+    
+    IO.inspect rows, label: "rows"
   end
 
   # test "get_columns makes list of column values" do
@@ -42,10 +43,10 @@ defmodule NwsReader.FormatterTest do
     %{
       "k0" => "v0", 
       "k1" => "v1", 
-      "k2" => %{
-        "k2-0" => "v2-0",
-        "k2-1" => "v2-1"
-      },
+      # "k2" => %{
+      #   "k2-0" => "v2-0",
+      #   "k2-1" => "v2-1"
+      # },
       "k3" => %{"k3-0" => "v3-0"}
     }
   end
