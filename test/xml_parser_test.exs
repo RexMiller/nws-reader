@@ -4,19 +4,13 @@ defmodule NwsReader.XmlParserTest do
   doctest NwsReader.XmlParser
 
   test "some stuff" do
-    expected = %{
-      "a" => "aaa", 
-      "c" => %{
-        "b" => "b1b1"
-      }, 
-      "d" => %{
-        "b" => "b2b2", 
-        "c" => "c2c2"
-      }
-    }    
-    result = Parser.map_xml xml()
-    assert expected == result
+    xml()
+    |> Parser.map_xml()
+    |> assert_equal(parsed_xml())
+    
   end
+
+  defp assert_equal(result, expected), do: assert(expected == result)
 
   defp xml do
     """
@@ -27,5 +21,18 @@ defmodule NwsReader.XmlParserTest do
       <c>c2c2</c>
     </d>
     """    
+  end
+
+  defp parsed_xml do
+    %{
+      "a" => "aaa", 
+      "c" => %{
+        "b" => "b1b1"
+      }, 
+      "d" => %{
+        "b" => "b2b2", 
+        "c" => "c2c2"
+      }
+    }
   end
 end
