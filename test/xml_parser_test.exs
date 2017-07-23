@@ -3,7 +3,7 @@ defmodule NwsReader.XmlParserTest do
   alias NwsReader.XmlParser, as: Parser
   doctest NwsReader.XmlParser
 
-  test "some stuff" do
+  test "map_xml parses XML into a map data structure" do
     xml()
     |> Parser.map_xml()
     |> assert_equal(parsed_xml())

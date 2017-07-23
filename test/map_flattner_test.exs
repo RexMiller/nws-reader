@@ -3,7 +3,7 @@ defmodule NwsReader.MapFlattenerTest do
   use ExUnit.Case, async: true
   import NwsReader.MapFlattener
 
-  test "flatten" do
+  test "flatten_children flattens sub-maps into formatted strings" do
     nested_map()
     |> flatten_children()
     |> assert_equal(flattened_map())
