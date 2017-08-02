@@ -1,6 +1,6 @@
 defmodule NwsReader.ClientTests do
   use ExUnit.Case, async: true
-  @moduletag :integration
+  # @moduletag :integration
 
   test "get_stations returns list of stations for a valid US state" do
     stations = NwsReader.Client.get_stations("AZ")
@@ -25,6 +25,16 @@ defmodule NwsReader.ClientTests do
     |> Enum.map(&String.trim/1)
     |> Enum.any?(fn(line) -> line == "<station_id>KLUF</station_id>" end)
     |> assert()
+  end
+
+  test "all together now" do
+    IO.puts "\n"
+    NwsReader.Client.get_observation("kluf")
+    |> NwsReader.XmlParser.map_xml()
+    |> (fn(%{"current_observation" => data}) -> data end).()
+    |> NwsReader.MapFlattener.flatten_children()
+    |> NwsReader.Formatter.format()
+    |> IO.puts()
   end
 
 end
