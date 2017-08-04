@@ -10,6 +10,10 @@ defmodule NwsReader.Formatter do
     |> Enum.join(format_divider(lengths))
   end
 
+  def to_rows(map) do
+    
+  end
+
   def get_lengths(map) do
     map 
     |> Enum.unzip()
