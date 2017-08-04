@@ -1,0 +1,45 @@
+[user]
+	name = Rex Miller
+	email = rex.miller@carvana.com
+[core]
+	editor = code --wait
+	autocrlf = true
+	excludesfile = C:\\Users\\remille\\Documents\\gitignore_global.txt
+[diff]
+	tool = vsdiffmerge
+[difftool]
+	prompt = false
+[difftool "vsdiffmerge"]
+	cmd = '"C:/Program Files (x86)/Microsoft Visual Studio 12.0/Common7/IDE/vsdiffmerge.exe"' "$LOCAL" "$REMOTE" //t
+	keepbackup = false
+	trustexitcode = true
+[merge]
+	tool = vsdiffmerge
+[mergetool]
+	prompt = false
+[mergetool "vsdiffmerge"]
+	cmd = '"C:/Program Files (x86)/Microsoft Visual Studio 12.0/Common7/IDE/vsdiffmerge.exe"' "$REMOTE" "$LOCAL" "$BASE" "$MERGED" //m
+	keepbackup = false
+      trustexitcode = true	
+# [merge]
+# 	tool = p4merge
+# [mergetool]
+# 	prompt = false
+# [mergetool "p4merge"]
+# 	cmd = p4merge.exe $BASE $LOCAL $REMOTE $MERGED
+# 	keepbackup = false
+# 	trustexitcode = false
+[push]
+	default = simple
+[alias]
+	unstage = reset HEAD --
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	ol = log --oneline
+	l = log --oneline -10
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
